@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Travel Planner</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin-bottom: 8px;
+            font-size: 36px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .button-container {
+            margin-top: 22px;
+            text-align: center;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .result {
+            display: none;
+        }
+
+        .result h2 {
+            margin-top: 0;
+        }
+
+        #itinerary {
+            line-height: 1.7;
+        }
+
+        #itinerary h1,
+        #itinerary h2,
+        #itinerary h3 {
+            margin-top: 25px;
+        }
+
+        #itinerary ul,
+        #itinerary ol {
+            padding-left: 25px;
+        }
+
+        .error {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>AI Travel Planner</h1>
+        <p>Tell us about your trip and let AI create your complete itinerary.</p>
+    </div>
+
+    <div class="card">
+
+        <form id="travelForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <input
+                        type="text"
+                        id="destination"
+                        placeholder="e.g. London"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="days">Number of Days</label>
+                    <input
+                        type="number"
+                        id="days"
+                        min="1"
+                        max="30"
+                        placeholder="e.g. 5"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="adults">Adults</label>
+                    <input
+                        type="number"
+                        id="adults"
+                        min="1"
+                        value="2"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="children">Children</label>
+                    <input
+                        type="number"
+                        id="children"
+                        min="0"
+                        value="0"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Budget</label>
+                    <input
+                        type="text"
+                        id="budget"
+                        placeholder="e.g. ₹1,50,000"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="pace">Travel Pace</label>
+                    <select id="pace">
+                        <option value="relaxed">Relaxed</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="fast-paced">Fast-paced</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label for="interests">Interests</label>
+                    <input
+                        type="text"
+                        id="interests"
+                        placeholder="e.g. sightseeing, food, shopping, history, nightlife"
+                    >
+                </div>
+
+                <div class="form-group full">
+                    <label for="preferences">Additional Preferences / Constraints</label>
+                    <textarea
+                        id="preferences"
+                        placeholder="e.g. travelling with an infant, avoid long walks, prefer public transport, vegetarian food..."
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="button-container">
+                <button type="submit" id="generateButton">
+                    Generate Itinerary
+                </button>
+            </div>
+
+        </form>
+
+        <div class="error" id="error"></div>
+
+    </div>
+
+    <div class="card loading" id="loading">
+
+        <div class="spinner"></div>
+
+        <h3>Creating your itinerary...</h3>
+
+        <p>
+            Our travel research and itinerary agents are working on your trip.
+        </p>
+
+        <p>
+            This may take a minute.
+        </p>
+
+    </div>
+
+    <div class="card result" id="result">
+
+        <h2>Your Travel Itinerary</h2>
+
+        <div id="itinerary"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const form = document.getElementById("travelForm");
+    const generateButton = document.getElementById("generateButton");
+    const loading = document.getElementById("loading");
+    const result = document.getElementById("result");
+    const itinerary = document.getElementById("itinerary");
+    const errorBox = document.getElementById("error");
+
+
+    form.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        errorBox.style.display = "none";
+        result.style.display = "none";
+        loading.style.display = "block";
+
+        generateButton.disabled = true;
+        generateButton.textContent = "Generating...";
+
+
+        const destination =
+            document.getElementById("destination").value.trim();
+
+        const days =
+            document.getElementById("days").value;
+
+        const adults =
+            document.getElementById("adults").value;
+
+        const children =
+            document.getElementById("children").value;
+
+        const budget =
+            document.getElementById("budget").value.trim();
+
+        const pace =
+            document.getElementById("pace").value;
+
+        const interests =
+            document.getElementById("interests").value.trim();
+
+        const preferences =
+            document.getElementById("preferences").value.trim();
+
+
+        const topic = `
+Create a complete travel itinerary.
+
+Destination: ${destination}
+
+Number of days: ${days}
+
+Adults: ${adults}
+
+Children: ${children}
+
+Budget: ${budget || "Not specified"}
+
+Travel pace: ${pace}
+
+Interests: ${interests || "Not specified"}
+
+Additional preferences and constraints:
+${preferences || "None specified"}
+        `.trim();
+        try {
+
+            const response = await fetch("/api/plan", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    topic: topic
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to generate itinerary."
+                );
+
+            }
+
+
+            if (data.error) {
+
+                throw new Error(data.error);
+
+            }
+
+
+            displayMarkdown(data.result);
+
+            result.style.display = "block";
+
+            result.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+
+        catch (error) {
+
+            errorBox.textContent =
+                error.message ||
+                "Something went wrong.";
+
+            errorBox.style.display = "block";
+
+        }
+
+        finally {
+
+            loading.style.display = "none";
+
+            generateButton.disabled = false;
+
+            generateButton.textContent =
+                "Generate Itinerary";
+
+        }
+
+    });
+
+
+    function displayMarkdown(markdown) {
+
+        /*
+         * Simple Markdown rendering.
+         *
+         * For local development this is enough for headings,
+         * lists and basic formatting.
+         */
+
+        let html = markdown;
+
+        html = html.replace(
+            /^### (.*)$/gm,
+            "<h3>$1</h3>"
+        );
+
+        html = html.replace(
+            /^## (.*)$/gm,
+            "<h2>$1</h2>"
+        );
+
+        html = html.replace(
+            /^# (.*)$/gm,
+            "<h1>$1</h1>"
+        );
+
+        html = html.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
+
+        html = html.replace(
+            /^\- (.*)$/gm,
+            "<li>$1</li>"
+        );
+
+        html = html.replace(
+            /(<li>.*<\/li>)/gs,
+            "<ul>$1</ul>"
+        );
+
+        html = html.replace(
+            /\n\n/g,
+            "<br><br>"
+        );
+
+        html = html.replace(
+            /\n/g,
+            "<br>"
+        );
+
+        itinerary.innerHTML = html;
+    }
+
+</script>
+
+</body>
+</html>

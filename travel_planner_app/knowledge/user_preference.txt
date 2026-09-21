@@ -1,0 +1,5 @@
+# Information you give the agent beforehand so it can make better decisions.
+- Prefer hotels with good reviews.
+- Avoid overly packed days.
+- Prefer experiences over shopping.
+- Prioritize value for money.

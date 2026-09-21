@@ -1,0 +1,8 @@
+# Runtime dependencies for the CrewAI travel planner API and AgentCore entrypoint.
+crewai[bedrock,tools]>=1.15.17,<2.0.0
+bedrock-agentcore
+boto3
+aws-opentelemetry-distro
+fastapi>=0.141.1
+uvicorn>=0.52.4
+markdown>=3.10.3
