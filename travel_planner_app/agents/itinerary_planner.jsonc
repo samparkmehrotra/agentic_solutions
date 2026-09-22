@@ -24,9 +24,9 @@
   // "function_calling_llm": "openai/gpt-5.4-mini",
 
   // Tools available to this agent
-  // Built-in: "SerperDevTool", "ScrapeWebsiteTool", "FileReadTool", etc.
+  // SerperDevTool is intentionally disabled while its API key is being fixed.
   // Custom: "custom:my_tool" loads from tools/my_tool.py
-  "tools": ["SerperDevTool", "ScrapeWebsiteTool", "DirectoryReadTool", "FileReadTool", "FileWriterTool"],
+  "tools": ["DirectoryReadTool", "FileReadTool", "FileWriterTool"],
 
   // Optional agent-level guardrail — validates this agent's final output.
   // String guardrails are checked by an LLM and can reject/retry output.

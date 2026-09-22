@@ -9,7 +9,7 @@
   "tasks": [
     {
       "name": "research_travel_options",
-      "description": "Research the user's travel requirements for {topic}, travel dates, number of travelers, budget, interests, preferred pace, transportation preferences, accommodation preferences, and any other constraints. Gather and validate current information about suitable destinations, attractions, activities, transportation options, accommodation areas, estimated costs, travel times, local logistics, and important considerations. Use reliable sources and identify any information that is uncertain, conflicting, or requires further verification.",
+      "description": "Research the user's travel requirements for {topic}, including dates, travelers, budget, interests, pace, transportation, accommodation, and constraints. Use the AgentCore gateway database lookup when it is available. If no record exists or the gateway is unavailable, continue with a practical best-effort plan based on general knowledge and clearly label assumptions. Do not claim that assumed details came from the database.",
       "expected_output": "A structured and comprehensive research report containing validated travel options, relevant attractions and activities, transportation options, accommodation recommendations or areas, estimated costs, travel times, important logistics, assumptions, uncertainties, and source references. The information must be organized so that the itinerary planner can directly use it to construct the final itinerary.",
 
       // Optional task guardrail(s) validate output before completion

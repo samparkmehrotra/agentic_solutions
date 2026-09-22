@@ -1,0 +1,35 @@
+[
+  {
+    "name": "get_travel_plan",
+    "description": "Fetch an existing travel plan for a city, including itinerary, budget, and duration.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "The city for which the travel plan is required."
+        }
+      },
+      "required": [
+        "city"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "itinerary": {
+          "type": "string"
+        },
+        "budget": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+]

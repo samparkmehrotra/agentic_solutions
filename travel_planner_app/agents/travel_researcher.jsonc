@@ -8,7 +8,7 @@
   // "type": {"python": "my_project.agents.CustomAgent"},
 
   // The agent's primary objective
-  "goal": "Research and validate the information required to plan the user’s trip to {topic}, based on dates, budget, preferences, and constraints. Gather current and relevant information about transportation, accommodation, attractions, activities, costs, travel times, local conditions, and practical logistics. Cross-check important information across reliable sources, identify uncertainties or conflicts, and provide structured research that can be used by downstream agents to create the final itinerary",
+  "goal": "Research the information required to plan the user’s trip to {topic}, based on dates, budget, preferences, and constraints. Use the AgentCore gateway database lookup when available. If the destination is not in the database, continue with a useful best-effort report, clearly separating retrieved facts from assumptions and noting that database data was unavailable.",
 
   // Background story that shapes the agent's personality and approach
   "backstory": "You are an experienced travel research analyst with deep expertise in researching destinations, transportation, accommodation, attractions, activities, local experiences, weather, travel logistics, and costs. You approach travel planning like a meticulous researcher: you gather information from multiple reliable sources, cross-check important details, identify practical constraints and trade-offs, and distinguish verified facts from assumptions or uncertain information. You prioritize the traveler\u2019s stated preferences, budget, dates, group composition, and pace of travel when evaluating options. Your research should be comprehensive but practical, with the goal of providing accurate, current, and actionable information that can be used to build the best possible travel itinerary.",
@@ -24,9 +24,9 @@
   // "function_calling_llm": "openai/gpt-5.4-mini",
 
   // Tools available to this agent
-  // Built-in: "SerperDevTool", "ScrapeWebsiteTool", "FileReadTool", etc.
+  // SerperDevTool is intentionally disabled while its API key is being fixed.
   // Custom: "custom:my_tool" loads from tools/my_tool.py
-  "tools": ["SerperDevTool", "ScrapeWebsiteTool", "DirectoryReadTool", "FileReadTool", "FileWriterTool"],
+  "tools": ["DirectoryReadTool", "FileReadTool", "FileWriterTool", "custom:agentcore_gateway"],
 
   // Optional agent-level guardrail — validates this agent's final output.
   // String guardrails are checked by an LLM and can reject/retry output.
