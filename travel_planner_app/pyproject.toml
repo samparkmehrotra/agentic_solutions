@@ -16,6 +16,7 @@ dependencies = [
     "crewai-tools[mcp]>=1.15.21",
     "httpx>=0.27.0,<1.0.0",
     "mcp>=1.28.1,<2.0.0",
+    "ddgs>=9.16.0",
 ]
 
 [build-system]

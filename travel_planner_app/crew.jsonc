@@ -2,127 +2,46 @@
   // Display name for this crew
   "name": "travel-planner-app",
 
-  // Agents to include — each must have a matching agents/<name>.jsonc file
+  // Agents to include
   "agents": ["travel_researcher", "itinerary_planner"],
 
-  // Task definitions — executed in order for sequential process
+  // Tasks executed in order
   "tasks": [
     {
       "name": "research_travel_options",
-      "description": "Research the user's travel requirements for {topic}, including the requested start and end dates, travelers, budget, interests, pace, transportation priority, accommodation, and constraints. Before planning, always call the AgentCore Gateway database tool with the city. Use the returned predefined city, budget, duration, and itinerary details as the source of truth. If the city is not found or the Gateway is unavailable, stop and report that the destination could not be verified; do not invent an itinerary. If verified, compare relevant car, bus, train, and flight options and provide estimated fares and travel times. Do not imply that estimates are live prices.",
-      "expected_output": "A structured research report based on a successful city lookup, containing the verified city record, trip dates, transport comparison, cheapest practical transport recommendation, estimated fares clearly labeled as estimates, travel times, relevant attractions and activities, accommodation recommendations or areas, important logistics, assumptions, uncertainties, and source references. If lookup fails, return only a clear destination-verification error.",
 
-      // Optional task guardrail(s) validate output before completion
-      // Use "guardrail" for one rule or "guardrails" for many
-      // Failed guardrails retry up to guardrail_max_retries times
-      // "guardrail": "Every factual claim needs context support.",
-      // "guardrails": [
-      //   "Every factual claim must be supported by context.",
-      //   "The answer must match the expected output format."
-      // ],
-      // "guardrail_max_retries": 2,
+      "description": "Perform travel research for {topic}. REQUIRED PROCEDURE: Step 1 — call the AgentCore travel database lookup tool with the destination city. Do not produce research before this call. Step 2 — inspect the Gateway result. If the result is FOUND, record the returned city, budget, duration, and itinerary as database information. If the result is NOT_FOUND or ERROR, you MUST call the Free web search tool before continuing. Step 3 — use the Free web search tool to research the destination and gather current/relevant information about attractions, recommended duration, transportation, accommodation areas, activities, approximate costs, and travel logistics. Step 4 — compare transportation options including car, bus, train, and flight where applicable. Step 5 — produce the structured research report. A research report for a NOT_FOUND destination is invalid unless it contains information obtained from the Free web search tool. Do not use your own general knowledge as a substitute for either required tool call.",
 
-      // Advanced task options:
-      // Docs: https://docs.crewai.com/concepts/tasks
-      // "type": "ConditionalTask",
-      // "condition": { "python": "my_project.conditions.should_run" },
-      // "output_json": { "python": "my_project.models.ReportOutput" },
-      // "output_pydantic": null,
-      // "response_model": null,
-      // "converter_cls": { "python": "my_project.converters.CustomConverter" },
-      // "markdown": false,
-      // "input_files": { "brief": "data/brief.txt" },
-      // "security_config": {},
+      "expected_output": "A structured research report for {topic}. The report MUST contain a Gateway database lookup result. If the Gateway result is NOT_FOUND or ERROR, it MUST also contain Free web search results. Include destination information, attractions, activities, recommended duration, accommodation areas, transportation comparison, cheapest practical transport option, estimated fares, travel times, approximate budget, logistics, assumptions, uncertainties, and source references. Do not claim that web research was performed unless information was actually returned by the Free web search tool.",
 
-      // Which agent handles this task
       "agent": "travel_researcher"
+    },
 
-      // "tools": [],
-      // "human_input": false,
-      // "async_execution": false
-    }
-,
     {
-      // Task identifier
       "name": "create_travel_itinerary",
-      "description": "Using the user's original travel requirements to {topic} and the research produced by the travel researcher, create a practical and optimized day-by-day travel itinerary. Select activities, attractions, transportation, and locations that best match the user's budget, interests, dates, travel pace, and constraints. Consider geographical proximity, realistic travel times, opening hours where available, meal breaks, rest periods, and unnecessary backtracking. Clearly identify important assumptions and any items that require user confirmation.",
-      "expected_output": "A complete day-by-day itinerary containing dates or days, locations, activities, recommended sequence, estimated timing, transportation between major activities, approximate costs where available, meal or break suggestions, and important practical notes. The itinerary should be realistic, logically sequenced, aligned with the user's requirements, and clearly identify any assumptions or information that needs verification.",
 
-      // Optional task guardrail(s) validate output before completion
-      // Use "guardrail" for one rule or "guardrails" for many
-      // Failed guardrails retry up to guardrail_max_retries times
-      // "guardrail": "Every factual claim needs context support.",
-      // "guardrails": [
-      //   "Every factual claim must be supported by context.",
-      //   "The answer must match the expected output format."
-      // ],
-      // "guardrail_max_retries": 2,
+      "description": "Using the user's original travel requirements for {topic} and the research produced by the travel researcher, create a practical day-by-day travel itinerary. Use the research report as the primary source of travel information. Align the itinerary with the user's dates, travelers, budget, interests, pace, transportation priority, accommodation requirements, and other constraints. Consider geographical proximity, realistic travel times, meal breaks, rest periods, and unnecessary backtracking. Do not invent facts, prices, availability, bookings, dates, or user preferences that are not supported by the user's requirements or the research report. Clearly identify assumptions, estimates, uncertainties, and information requiring confirmation.",
 
-      // Advanced task options:
-      // Docs: https://docs.crewai.com/concepts/tasks
-      // "type": "ConditionalTask",
-      // "condition": { "python": "my_project.conditions.should_run" },
-      // "output_json": { "python": "my_project.models.ReportOutput" },
-      // "output_pydantic": null,
-      // "response_model": null,
-      // "converter_cls": { "python": "my_project.converters.CustomConverter" },
-       "markdown": true,
-      // "input_files": { "brief": "data/brief.txt" },
-      // "security_config": {},
+      "expected_output": "A complete day-by-day travel itinerary based on the travel research report. Include dates or days, locations, activities, recommended sequence, estimated timing, transportation between major activities, approximate costs where available, meal or break suggestions, practical notes, assumptions, estimates, uncertainties, and information requiring verification.",
 
-      // Which agent handles this task
+      "markdown": true,
+
       "agent": "itinerary_planner"
-                                                                                                                                                                                                                                                                                                              
-      // "tools": [],
-      // "human_input": false,
-      // "async_execution": false
     }
-
   ],
 
   // Execution process
-  // "sequential" — tasks run in order, each receiving prior task outputs
-  // "hierarchical" — a manager agent delegates tasks (requires manager_llm)
   "process": "sequential",
 
-  // Enable verbose logging during execution
+  // Enable verbose logging
   "verbose": true,
 
-  // Enable crew memory — persists context and learnings across tasks
+  // Crew memory
   "memory": false,
 
-  // Automatically plan the execution strategy before running tasks
-  // "planning": false,
-
-  // LLM for the planning step (used when planning is true)
-  // "planning_llm": "openai/gpt-4o",
-
-  // LLM for the manager agent (required when process is "hierarchical")
-  // "manager_llm": "openai/gpt-4o",
-
-  // Crew-level LLM fields also accept object form for custom endpoints
-  // "chat_llm": {"model": "llama3", "provider": "ollama", "base_url": "http://localhost:11434"},
-
-  // Advanced crew options:
-  // Docs: https://docs.crewai.com/concepts/crews
-  // For hierarchical crews, manager_agent can reference an agents/<name>.jsonc file
-  // that is not included in the "agents" list.
-  // "manager_agent": "research_analyst",
-  // "before_kickoff_callbacks": [{"python": "my_project.callbacks.before_kickoff"}],
-  // "after_kickoff_callbacks": [{"python": "my_project.callbacks.after_kickoff"}],
-  // "function_calling_llm": "openai/gpt-4o-mini",
-  // "max_rpm": null,
+  // Enable task caching
   "cache": true,
-  // "knowledge_sources": [],
-  // "embedder": {},
-  // "output_log_file": "crew.log",
-  // "stream": false,
-  // "tracing": false,
-  // "security_config": {},
 
-  // Optional runtime input defaults.
-  // Use {placeholder} in agent or task text, for example:
-  // "description": "Research {topic} and write a brief"
-  // `crewai run` prompts for any placeholders missing from this object.
+  // Runtime inputs
   "inputs": {}
 }
