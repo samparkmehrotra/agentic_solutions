@@ -1,0 +1,16 @@
+[
+  {
+    "name": "get_travel_plan",
+    "description": "Fetch the predefined travel plan, budget, duration, and itinerary for a city from DynamoDB. Always call this before creating an itinerary.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "City to look up, for example Ooty or London."
+        }
+      },
+      "required": ["city"]
+    }
+  }
+]

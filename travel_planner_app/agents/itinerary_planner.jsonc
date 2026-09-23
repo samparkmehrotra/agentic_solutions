@@ -17,7 +17,7 @@
   // For custom endpoints or deployment-based providers, replace with:
   // "llm": {"model": "llama3", "provider": "ollama", "base_url": "http://localhost:11434"},
   // "llm": {"deployment_name": "my-deployment", "provider": "azure", "api_version": "2024-10-21"},
-  "llm": "bedrock/apac.amazon.nova-pro-v1:0",
+  "llm": "bedrock/apac.amazon.nova-micro-v1:0",
   
 
   // Override LLM used specifically for tool/function calling
@@ -26,7 +26,7 @@
   // Tools available to this agent
   // SerperDevTool is intentionally disabled while its API key is being fixed.
   // Custom: "custom:my_tool" loads from tools/my_tool.py
-  "tools": ["DirectoryReadTool", "FileReadTool", "FileWriterTool"],
+  "tools": [],
 
   // Optional agent-level guardrail — validates this agent's final output.
   // String guardrails are checked by an LLM and can reject/retry output.
@@ -58,13 +58,13 @@
     "verbose": true,
 
     // Allow this agent to delegate tasks to other agents in the crew
-    "allow_delegation": true,
+    "allow_delegation": false,
 
     // Maximum reasoning iterations per task (prevents infinite loops)
-    // "max_iter": 25,
+    "max_iter": 5,
 
     // Maximum tokens for agent's response generation
-    // "max_tokens": null,
+    "max_tokens": 1200,
 
     // Maximum execution time in seconds
     // "max_execution_time": null,
@@ -76,16 +76,16 @@
     // "memory": false,
 
     // Cache tool results to avoid duplicate calls
-    // "cache": true,
+    "cache": true,
 
     // Auto-summarize context when it exceeds the LLM's context window
     // "respect_context_window": true,
 
     // Maximum retries on execution errors
-    // "max_retry_limit": 2,
+    "max_retry_limit": 0,
 
     // Enable step-by-step planning before task execution
-    "planning": true
+    "planning": false
 
     // Include system prompt in LLM calls
     // "use_system_prompt": true

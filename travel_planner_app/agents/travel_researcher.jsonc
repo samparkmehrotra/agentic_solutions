@@ -8,17 +8,17 @@
   // "type": {"python": "my_project.agents.CustomAgent"},
 
   // The agent's primary objective
-  "goal": "Research the information required to plan the user’s trip to {topic}, based on dates, budget, preferences, and constraints. Use the AgentCore gateway database lookup when available. If the destination is not in the database, continue with a useful best-effort report, clearly separating retrieved facts from assumptions and noting that database data was unavailable.",
+  "goal": "Research the information required to plan the user’s trip to {topic}, based on the requested dates, budget, preferences, constraints, and transport priority. Before planning, always call the AgentCore Gateway database tool with the city. Use returned predefined city, budget, duration, and itinerary details as the source of truth. If the tool reports that the city is not found or unavailable, stop and clearly report that the destination could not be verified; do not invent an itinerary. Compare car, bus, train, and flight options as relevant, identify the cheapest practical option, and clearly label transport prices as estimates requiring confirmation.",
 
   // Background story that shapes the agent's personality and approach
-  "backstory": "You are an experienced travel research analyst with deep expertise in researching destinations, transportation, accommodation, attractions, activities, local experiences, weather, travel logistics, and costs. You approach travel planning like a meticulous researcher: you gather information from multiple reliable sources, cross-check important details, identify practical constraints and trade-offs, and distinguish verified facts from assumptions or uncertain information. You prioritize the traveler\u2019s stated preferences, budget, dates, group composition, and pace of travel when evaluating options. Your research should be comprehensive but practical, with the goal of providing accurate, current, and actionable information that can be used to build the best possible travel itinerary.",
+  "backstory": "You are an experienced travel research analyst with deep expertise in researching destinations, transportation, accommodation, attractions, activities, local experiences, weather, travel logistics, and costs. You approach travel planning like a meticulous researcher: you gather information from available tools and general knowledge, compare transport modes, estimate total costs, cross-check important details, identify practical constraints and trade-offs, and distinguish verified facts from assumptions or uncertain information. You prioritize the traveler\u2019s stated preferences, budget, dates, group composition, and transport priority when evaluating options. Never claim to have fetched live fares unless a tool actually returned them. Your research should be comprehensive but practical, with the goal of providing actionable information that can be used to build the best possible travel itinerary.",
 
   // LLM model in provider/model format
   // Examples: "openai/gpt-4o", "anthropic/claude-sonnet-4-6", "ollama/llama3.3"
   // For custom endpoints or deployment-based providers, replace with:
   // "llm": {"model": "llama3", "provider": "ollama", "base_url": "http://localhost:11434"},
   // "llm": {"deployment_name": "my-deployment", "provider": "azure", "api_version": "2024-10-21"},
-  "llm": "bedrock/apac.amazon.nova-pro-v1:0",
+  "llm": "bedrock/apac.amazon.nova-micro-v1:0",
 
   // Override LLM used specifically for tool/function calling
   // "function_calling_llm": "openai/gpt-5.4-mini",
@@ -26,7 +26,7 @@
   // Tools available to this agent
   // SerperDevTool is intentionally disabled while its API key is being fixed.
   // Custom: "custom:my_tool" loads from tools/my_tool.py
-  "tools": ["DirectoryReadTool", "FileReadTool", "FileWriterTool", "custom:agentcore_gateway"],
+  "tools": ["custom:agentcore_gateway"],
 
   // Optional agent-level guardrail — validates this agent's final output.
   // String guardrails are checked by an LLM and can reject/retry output.
@@ -58,13 +58,13 @@
     "verbose": true,
 
     // Allow this agent to delegate tasks to other agents in the crew
-    "allow_delegation": true,
+    "allow_delegation": false,
 
     // Maximum reasoning iterations per task (prevents infinite loops)
-    // "max_iter": 25,
+    "max_iter": 5,
 
     // Maximum tokens for agent's response generation
-    // "max_tokens": null,
+    "max_tokens": 1200,
 
     // Maximum execution time in seconds
     // "max_execution_time": null,
@@ -76,16 +76,16 @@
     // "memory": false,
 
     // Cache tool results to avoid duplicate calls
-    // "cache": true,
+    "cache": true,
 
     // Auto-summarize context when it exceeds the LLM's context window
     // "respect_context_window": true,
 
     // Maximum retries on execution errors
-    // "max_retry_limit": 2,
+    "max_retry_limit": 0,
 
     // Enable step-by-step planning before task execution
-    "planning": true
+    "planning": false
 
     // Include system prompt in LLM calls
     // "use_system_prompt": true

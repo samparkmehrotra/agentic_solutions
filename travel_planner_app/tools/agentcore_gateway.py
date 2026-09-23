@@ -22,8 +22,10 @@ class AgentCoreGatewayTool(BaseTool):
 
     name: str = "AgentCore gateway database lookup"
     description: str = (
-        "Look up a travel destination in the optional AgentCore Gateway database. "
-        "If no record is available, continue planning with general assumptions."
+        "Look up a travel destination in the AgentCore Gateway database. "
+        "This lookup is required before planning. If no record is available or "
+        "the Gateway is unavailable, report the lookup failure and do not invent "
+        "database results."
     )
     args_schema: type[BaseModel] = GatewayRequest
 

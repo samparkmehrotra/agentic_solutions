@@ -1,0 +1,12 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "InvokeTravelPlannerRuntime",
+    "Effect": "Allow",
+    "Action": "bedrock-agentcore:InvokeAgentRuntime",
+    "Resource": [
+      "__RUNTIME_ARN__",
+      "__RUNTIME_ARN__/runtime-endpoint/DEFAULT"
+    ]
+  }]
+}

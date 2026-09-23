@@ -9,8 +9,8 @@
   "tasks": [
     {
       "name": "research_travel_options",
-      "description": "Research the user's travel requirements for {topic}, including dates, travelers, budget, interests, pace, transportation, accommodation, and constraints. Use the AgentCore gateway database lookup when it is available. If no record exists or the gateway is unavailable, continue with a practical best-effort plan based on general knowledge and clearly label assumptions. Do not claim that assumed details came from the database.",
-      "expected_output": "A structured and comprehensive research report containing validated travel options, relevant attractions and activities, transportation options, accommodation recommendations or areas, estimated costs, travel times, important logistics, assumptions, uncertainties, and source references. The information must be organized so that the itinerary planner can directly use it to construct the final itinerary.",
+      "description": "Research the user's travel requirements for {topic}, including the requested start and end dates, travelers, budget, interests, pace, transportation priority, accommodation, and constraints. Before planning, always call the AgentCore Gateway database tool with the city. Use the returned predefined city, budget, duration, and itinerary details as the source of truth. If the city is not found or the Gateway is unavailable, stop and report that the destination could not be verified; do not invent an itinerary. If verified, compare relevant car, bus, train, and flight options and provide estimated fares and travel times. Do not imply that estimates are live prices.",
+      "expected_output": "A structured research report based on a successful city lookup, containing the verified city record, trip dates, transport comparison, cheapest practical transport recommendation, estimated fares clearly labeled as estimates, travel times, relevant attractions and activities, accommodation recommendations or areas, important logistics, assumptions, uncertainties, and source references. If lookup fails, return only a clear destination-verification error.",
 
       // Optional task guardrail(s) validate output before completion
       // Use "guardrail" for one rule or "guardrails" for many
@@ -89,7 +89,7 @@
   "verbose": true,
 
   // Enable crew memory — persists context and learnings across tasks
-  "memory": true,
+  "memory": false,
 
   // Automatically plan the execution strategy before running tasks
   // "planning": false,
@@ -112,7 +112,7 @@
   // "after_kickoff_callbacks": [{"python": "my_project.callbacks.after_kickoff"}],
   // "function_calling_llm": "openai/gpt-4o-mini",
   // "max_rpm": null,
-  // "cache": true,
+  "cache": true,
   // "knowledge_sources": [],
   // "embedder": {},
   // "output_log_file": "crew.log",
